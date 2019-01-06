@@ -1,36 +1,49 @@
 #pragma once
 
-#include <SDL.h>
+#include "SDL.h"
+#include <unordered_map>
+#include <string>
+#include <vector>
 
-#include "TypeDefine.h"
-
+class Ship;
 
 class Game
 {
 public:
+	Game();
+	bool initialize();
+	void runLoop();
+	void shutdown();
 
-	Game() noexcept;
-	
-	bool Initialize() noexcept;
+	void addActor(class Actor* actor);
+	void removeActor(class Actor* actor);
 
-	void MainLoop() noexcept;
+	void addSprite(class SpriteComponent* sprite);
+	void removeSprite(class SpriteComponent* sprite);
 
-	void ShutDown() noexcept;
+	SDL_Texture* getTexture(const std::string& fileName);
 
 private:
+	void processInput();
+	void updateGame();
+	void generateOutput();
+	void loadData();
+	void unloadData();
 
-	void ProcessInput() noexcept;
-	void UpdateGame() noexcept;
-	void GenerateOutput() noexcept;
+	std::unordered_map<std::string, SDL_Texture*> mTextures;
+
+	std::vector<class Actor*> mActors;
+	
+	std::vector<class Actor*> mPendingActors;
+
+	std::vector<class SpriteComponent*> mSprites;
 
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;
 	Uint32 mTicksCount;
 	bool mIsRunning;
+	
+	bool mUpdatingActors;
 
-	int mPaddleDir;
-
-	Vector2 mPaddlePos;
-	Vector2 mBallPos;
-	Vector2 mBallVel;
+	class Ship* mShip;
 };

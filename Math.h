@@ -638,7 +638,7 @@ public:
 		return *this;
 	}
 
-	void Invert();
+	void Invert() noexcept;
 
 	Vector3 GetTranslation() const
 	{
@@ -663,9 +663,9 @@ public:
 	Vector3 GetScale() const
 	{
 		Vector3 retVal;
-		retVal.x = Vector3(mat[0][0], mat[0][1], mat[0][2]).Length();
-		retVal.y = Vector3(mat[1][0], mat[1][1], mat[1][2]).Length();
-		retVal.z = Vector3(mat[2][0], mat[2][1], mat[2][2]).Length();
+		retVal.x = Vector3( mat[0][0], mat[0][1], mat[0][2] ).Length();
+		retVal.y = Vector3( mat[1][0], mat[1][1], mat[1][2] ).Length();
+		retVal.z = Vector3( mat[2][0], mat[2][1], mat[2][2] ).Length();
 		return retVal;
 	}
 
@@ -724,12 +724,13 @@ public:
 			{ 0.0f, 0.0f, 1.0f, 0.0f },
 			{ 0.0f, 0.0f, 0.0f, 1.0f },
 		};
+
 		return Matrix4(temp);
 	}
 
-	static Matrix4 CreateFromQuaternion(const class Quaternion& q);
+	static Matrix4 CreateFromQuaternion(const class Quaternion& q) noexcept;
 
-	static Matrix4 CreateTranslation(const Vector3& trans)
+	static Matrix4 CreateTranslation(const Vector3& trans) noexcept
 	{
 		float temp[4][4] =
 		{
@@ -747,9 +748,10 @@ public:
 		Vector3 xaxis = Vector3::Normalize(Vector3::Cross(up, zaxis));
 		Vector3 yaxis = Vector3::Normalize(Vector3::Cross(zaxis, xaxis));
 		Vector3 trans;
-		trans.x = -Vector3::Dot(xaxis, eye);
-		trans.y = -Vector3::Dot(yaxis, eye);
-		trans.z = -Vector3::Dot(zaxis, eye);
+		
+		trans.x = -Vector3::Dot( xaxis, eye );
+		trans.y = -Vector3::Dot( yaxis, eye );
+		trans.z = -Vector3::Dot( zaxis, eye );
 
 		float temp[4][4] =
 		{
@@ -773,10 +775,11 @@ public:
 		return Matrix4(temp);
 	}
 
-	static Matrix4 CreatePerspectiveFOV(float fovY, float width, float height, float near, float far)
+	static Matrix4 CreatePerspectiveFOV( float fovY, float width, float height, float near, float far ) noexcept
 	{
 		float yScale = Math::Cot(fovY / 2.0f);
 		float xScale = yScale * height / width;
+
 		float temp[4][4] =
 		{
 			{ xScale, 0.0f, 0.0f, 0.0f },
@@ -784,7 +787,8 @@ public:
 			{ 0.0f, 0.0f, far / (far - near), 1.0f },
 			{ 0.0f, 0.0f, -near * far / (far - near), 0.0f }
 		};
-		return Matrix4(temp);
+		
+		return Matrix4( temp );
 	}
 
 	static Matrix4 CreateSimpleViewProj(float width, float height)
@@ -796,7 +800,8 @@ public:
 			{ 0.0f, 0.0f, 1.0f, 0.0f },
 			{ 0.0f, 0.0f, 1.0f, 1.0f }
 		};
-		return Matrix4(temp);
+
+		return Matrix4( temp );
 	}
 	
 	static const Matrix4 Identity;

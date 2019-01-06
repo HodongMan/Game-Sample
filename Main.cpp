@@ -1,18 +1,14 @@
-#include <iostream>
-#include "Game.h"
-using namespace std;
 
-int main(int argc, char * argv[])
+#include "Game.h"
+
+int main(int argc, char** argv)
 {
 	Game game;
-
-	bool success = game.Initialize();
-	
-	if ( true )
+	bool success = game.initialize();
+	if (success)
 	{
-		game.MainLoop();
+		game.runLoop();
 	}
-	
-	game.ShutDown();
+	game.shutdown();
 	return 0;
 }
