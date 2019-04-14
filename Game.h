@@ -6,37 +6,45 @@
 #include <vector>
 
 class Ship;
+class Actor;
+class SpriteComponent;
+class Asteroid;
 
 class Game
 {
 public:
-	Game();
-	bool initialize();
-	void runLoop();
-	void shutdown();
+	Game( void );
 
-	void addActor(class Actor* actor);
-	void removeActor(class Actor* actor);
+	bool initialize( void ) noexcept;
+	void runLoop( void ) noexcept;
+	void shutdown( void ) noexcept;
 
-	void addSprite(class SpriteComponent* sprite);
-	void removeSprite(class SpriteComponent* sprite);
+	void addActor( Actor* actor ) noexcept;
+	void removeActor( Actor* actor ) noexcept;
 
-	SDL_Texture* getTexture(const std::string& fileName);
+	void addSprite( SpriteComponent* sprite ) noexcept;
+	void removeSprite( SpriteComponent* sprite ) noexcept;
+
+	SDL_Texture* getTexture( const std::string& fileName ) noexcept;
+
+	void addAsteroid( Asteroid* ast) noexcept;
+	void removeAsteroid( Asteroid* ast) noexcept;
+	std::vector<Asteroid*>& getAsteroids( void ) noexcept { return mAsteroids; }
 
 private:
-	void processInput();
-	void updateGame();
-	void generateOutput();
-	void loadData();
-	void unloadData();
+	void processInput( void ) noexcept;
+	void updateGame( void ) noexcept;
+	void generateOutput( void ) noexcept;
+	void loadData( void ) noexcept;
+	void unloadData( void ) noexcept;
 
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
 
-	std::vector<class Actor*> mActors;
+	std::vector<Actor*> mActors;
 	
-	std::vector<class Actor*> mPendingActors;
+	std::vector<Actor*> mPendingActors;
 
-	std::vector<class SpriteComponent*> mSprites;
+	std::vector<SpriteComponent*> mSprites;
 
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;
@@ -45,5 +53,6 @@ private:
 	
 	bool mUpdatingActors;
 
-	class Ship* mShip;
+	Ship* mShip;
+	std::vector<Asteroid*> mAsteroids;
 };

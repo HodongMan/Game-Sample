@@ -45,6 +45,24 @@ void Actor::updateActor( float deltaTime ) noexcept
 	
 }
 
+void Actor::processInput( const uint8_t* keyState ) noexcept
+{
+	if ( State::EActive == mState )
+	{
+		for ( auto comp : mComponents )
+		{
+			comp->processInput( keyState ); 
+		}
+
+		actorInput( keyState );
+	}
+}
+
+void Actor::actorInput( const uint8_t* keyState ) noexcept
+{
+	
+}
+
 void Actor::addComponent( Component* component ) noexcept
 {
 	int myOrder = component->getUpdateOrder();

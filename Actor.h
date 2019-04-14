@@ -20,6 +20,10 @@ public:
 
 	virtual void updateActor( float deltaTime ) noexcept;
 
+	void processInput( const uint8_t* keyState ) noexcept;
+
+	virtual void actorInput( const uint8_t* keyState ) noexcept;
+
 	const Vector2& getPosition( void ) const noexcept { return mPosition; }
 	void setPosition( const Vector2& position ) noexcept { mPosition = position; }
 
@@ -28,6 +32,8 @@ public:
 
 	float getRotation( void ) const noexcept { return mRotation; }
 	void setRotation( float rotation ) noexcept { mRotation = rotation; }
+
+	Vector2 getForward( void ) const noexcept { return Vector2( Math::Cos( mRotation ), -Math::Sin( mRotation ) ); }
 
 	const State& getState( void ) const noexcept { return mState; }
 	void setState( const State& state ) noexcept { mState = state ;}

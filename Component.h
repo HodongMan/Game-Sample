@@ -12,6 +12,8 @@ public:
 
 	virtual void update( float deltaTime ) noexcept;
 
+	virtual void ProcessInput( const uint8_t* keyState ) noexcept {}
+
 	int getUpdateOrder() const noexcept { return mUpdateOrder; }
 
 protected:

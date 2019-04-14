@@ -15,4 +15,5 @@ Component::~Component()
 
 void Component::update( float deltaTime ) noexcept
 {
+
 }
