@@ -25,21 +25,21 @@ void MoveComponent::update( float deltaTime ) noexcept
 		Vector2 position	= mOwner->getPosition();
 		position			+= mOwner->getForward() * mForwardSpeed * deltaTime;
 
-		if ( position.x < 0.0f ) 
+		if ( position.x < 0.0f )
 		{ 
-			position.x = 1022.0f; 
+			position.x = 1022.0f;
 		}
-		else if ( position.x > 1024.0f) 
+		else if ( position.x > 1024.0f ) 
 		{ 
 			position.x = 2.0f; 
 		}
 
 		if ( position.y < 0.0f ) 
-		{ 
+		{
 			position.y = 766.0f; 
 		}
 		else if ( position.y > 768.0f ) 
-		{ 
+		{
 			position.y = 2.0f; 
 		}
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL_config.h>
+
 class Actor;
 
 class Component
@@ -12,7 +14,7 @@ public:
 
 	virtual void update( float deltaTime ) noexcept;
 
-	virtual void ProcessInput( const uint8_t* keyState ) noexcept {}
+	virtual void processInput( const uint8_t* keyState ) noexcept {}
 
 	int getUpdateOrder() const noexcept { return mUpdateOrder; }
 

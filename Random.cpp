@@ -17,16 +17,16 @@ float Random::getFloat( void ) noexcept
 	return getFloatRange( 0.0f, 1.0f );
 }
 
-float Random::getFloatRange( const float min, const float max ) noexcept
+float Random::getFloatRange( float min, float max ) noexcept
 {
 	std::uniform_real_distribution<float> dist( min, max );
 
 	return dist( sGenerator );
 }
 
-int Random::getIntRange( const int min, const int max ) noexcept
+int Random::getIntRange( int min, int max ) noexcept
 {
-	std::uniform_real_distribution<int> dist( min, max );
+	std::uniform_int_distribution<int> dist( min, max );
 
 	return dist( sGenerator );
 }

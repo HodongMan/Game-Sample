@@ -10,12 +10,8 @@ public:
 	Ship( Game* game);
 
 	void updateActor( float deltaTime ) noexcept override;
-	void processKeyBoard( const uint8_t* state ) noexcept;
-	float getRightSpeed( void ) const noexcept { return mRightSpeed;}
-	float getDownSpeed( void ) const noexcept { return mDownSpeed; }
+	void actorInput( const uint8_t* keyState ) noexcept override;
 
 private:
-
-	float mRightSpeed;
-	float mDownSpeed;
+	float mLaserCooldown;
 };

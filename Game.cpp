@@ -18,7 +18,7 @@ Game::Game( void )
 
 }
 
-bool Game::initialize( void )
+bool Game::initialize( void ) noexcept
 {
 	if ( 0 != SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) )
 	{
@@ -72,7 +72,7 @@ void Game::runLoop( void ) noexcept
 void Game::processInput( void ) noexcept
 {
 	SDL_Event event;
-	while ( true == SDL_PollEvent( &event ) )
+	while ( SDL_PollEvent( &event ) )
 	{
 		switch ( event.type )
 		{
@@ -83,7 +83,7 @@ void Game::processInput( void ) noexcept
 	}
 
 	const Uint8* keyState = SDL_GetKeyboardState( nullptr );
-	if ( true == keyState[SDL_SCANCODE_ESCAPE] )
+	if ( keyState[SDL_SCANCODE_ESCAPE] )
 	{
 		mIsRunning = false;
 	}
@@ -188,7 +188,7 @@ void Game::unloadData( void ) noexcept
 	mTextures.clear();
 }
 
-SDL_Texture* Game::getTexture(const std::string& fileName)
+SDL_Texture* Game::getTexture(const std::string& fileName) noexcept
 {
 	SDL_Texture* tex = nullptr;
 
