@@ -5,6 +5,7 @@ class AIComponent;
 
 class AIState
 {
+public:
 	AIState( AIComponent* owner )
 		: mOwner( owner )
 	{
