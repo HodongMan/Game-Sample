@@ -13,6 +13,6 @@ public:
 	void updateActor( float deltaTime ) noexcept override;
 
 private:
-	CircleComponent* mCircle;
-	float mLiveTime;
+	CircleComponent* _circle;
+	float _liveTime;
 };

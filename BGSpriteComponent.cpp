@@ -35,8 +35,8 @@ void BGSpriteComponent::draw( SDL_Renderer* renderer ) noexcept
 		rect.w = static_cast<int>( mScreenSize.x );
 		rect.h = static_cast<int>( mScreenSize.y );
 		
-		rect.x = static_cast<int>( mOwner->getPosition().x - rect.w / 2 + bg.mOffset.x );
-		rect.y = static_cast<int>( mOwner->getPosition().y - rect.h / 2 + bg.mOffset.y );
+		rect.x = static_cast<int>( _owner->getPosition().x - rect.w / 2 + bg.mOffset.x );
+		rect.y = static_cast<int>( _owner->getPosition().y - rect.h / 2 + bg.mOffset.y );
 
 		SDL_RenderCopy( 
 			renderer,

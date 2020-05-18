@@ -1,31 +1,33 @@
+#include "pch.h"
+
 #include "Actor.h"
 #include "Game.h"
 #include "Component.h"
-#include <algorithm>
+
 
 Actor::Actor( Game* game )
-	: mState( State::EActive )
-	, mPosition( Vector2::Zero )
-	, mScale( 1.0f )
-	, mRotation( 0.0f )
-	, mGame( game )
+	: _state( State::EActive )
+	, _position( Vector2::Zero )
+	, _scale( 1.0f )
+	, _rotation( 0.0f )
+	, _game( game )
 {
-	mGame->addActor( this );
+	_game->addActor( this );
 }
 
 Actor::~Actor()
 {
-	mGame->removeActor( this );
+	_game->removeActor( this );
 
-	while ( false == mComponents.empty() )
+	while ( false == _components.empty() )
 	{
-		delete mComponents.back();
+		delete _components.back();
 	}
 }
 
 void Actor::update( float deltaTime ) noexcept
 {
-	if ( State::EActive == mState )
+	if ( State::EActive == _state )
 	{
 		updateComponents( deltaTime );
 		updateActor( deltaTime );
@@ -34,7 +36,7 @@ void Actor::update( float deltaTime ) noexcept
 
 void Actor::updateComponents( float deltaTime ) noexcept
 {
-	for ( auto comp : mComponents )
+	for ( auto comp : _components )
 	{
 		comp->update( deltaTime );
 	}
@@ -47,9 +49,9 @@ void Actor::updateActor( float deltaTime ) noexcept
 
 void Actor::processInput( const uint8_t* keyState ) noexcept
 {
-	if ( State::EActive == mState )
+	if ( State::EActive == _state )
 	{
-		for ( auto comp : mComponents )
+		for ( auto comp : _components )
 		{
 			comp->processInput( keyState ); 
 		}
@@ -67,9 +69,9 @@ void Actor::addComponent( Component* component ) noexcept
 {
 	int myOrder = component->getUpdateOrder();
 
-	auto iter = mComponents.begin();
+	auto iter = _components.begin();
 
-	for ( ; iter != mComponents.end(); ++iter )
+	for ( ; iter != _components.end(); ++iter )
 	{
 		if ( myOrder < (*iter)->getUpdateOrder() )
 		{
@@ -77,14 +79,14 @@ void Actor::addComponent( Component* component ) noexcept
 		}
 	}
 
-	mComponents.insert( iter, component );
+	_components.insert( iter, component );
 }
 
 void Actor::removeComponent( Component* component ) noexcept
 {
-	auto iter = std::find( mComponents.begin(), mComponents.end(), component );
-	if ( iter != mComponents.end() )
+	auto iter = std::find( _components.begin(), _components.end(), component );
+	if ( iter != _components.end() )
 	{
-		mComponents.erase( iter );
+		_components.erase( iter );
 	}
 }

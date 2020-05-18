@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "Enemy.h"
 #include "Game.h"
 #include "SpriteComponent.h"
@@ -5,7 +7,7 @@
 #include "Grid.h"
 #include "Tile.h"
 #include "CircleComponent.h"
-#include <algorithm>
+
 
 Enemy::Enemy( Game* game )
 	:Actor( game )
@@ -21,8 +23,8 @@ Enemy::Enemy( Game* game )
 	nc->SetForwardSpeed(150.0f);
 	nc->StartPath( getGame()->getGrid()->getStartTile() );
 
-	mCircle = new CircleComponent( this );
-	mCircle->setRadius( 25.0f );
+	_circle = new CircleComponent( this );
+	_circle->setRadius( 25.0f );
 }
 
 Enemy::~Enemy( void )
@@ -34,7 +36,7 @@ Enemy::~Enemy( void )
 
 const CircleComponent* Enemy::getCircle( void ) const noexcept
 {
-	return mCircle;
+	return _circle;
 }
 
 void Enemy::updateActor( float deltaTime ) noexcept

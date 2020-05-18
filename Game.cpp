@@ -1,19 +1,19 @@
+#include "pch.h"
 
 #include "Game.h"
-#include "SDL_image.h"
-#include <algorithm>
 #include "Actor.h"
 #include "SpriteComponent.h"
 #include "Ship.h"
 #include "Asteroid.h"
 #include "Random.h"
+#include "Enemy.h"
 
 
 Game::Game( void )
-	: mWindow( nullptr )
-	, mRenderer( nullptr )
-	, mIsRunning( true )
-	, mUpdatingActors( false )
+	: _window( nullptr )
+	, _renderer( nullptr )
+	, _isRunning( true )
+	, _updatingActors( false )
 {
 
 }
@@ -27,16 +27,16 @@ bool Game::initialize( void ) noexcept
 		return false;
 	}
 	
-	mWindow = SDL_CreateWindow( "Test", 100, 100, 1024, 768, 0 );
-	if ( nullptr == mWindow )
+	_window = SDL_CreateWindow( "Test", 100, 100, 1024, 768, 0 );
+	if ( nullptr == _window )
 	{
 		SDL_Log( "Failed to create window: %s", SDL_GetError() );
 
 		return false;
 	}
 
-	mRenderer = SDL_CreateRenderer( mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
-	if ( nullptr == mRenderer )
+	_renderer = SDL_CreateRenderer( _window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+	if ( nullptr == _renderer )
 	{
 		SDL_Log( "Failed to create renderer: %s", SDL_GetError() );
 
@@ -54,14 +54,14 @@ bool Game::initialize( void ) noexcept
 
 	loadData();
 
-	mTicksCount = SDL_GetTicks();
+	_ticksCount = SDL_GetTicks();
 
 	return true;
 }
 
 void Game::runLoop( void ) noexcept
 {
-	while ( true == mIsRunning )
+	while ( true == _isRunning )
 	{
 		processInput();
 		updateGame();
@@ -77,7 +77,9 @@ void Game::processInput( void ) noexcept
 		switch ( event.type )
 		{
 		case SDL_QUIT:
-			mIsRunning = false;
+			{
+				_isRunning = false;
+			}
 			break;
 		}
 	}
@@ -85,49 +87,61 @@ void Game::processInput( void ) noexcept
 	const Uint8* keyState = SDL_GetKeyboardState( nullptr );
 	if ( keyState[SDL_SCANCODE_ESCAPE] )
 	{
-		mIsRunning = false;
+		_isRunning = false;
 	}
 
-	mUpdatingActors = true;
+	if ( keyState[SDL_SCANCODE_B] )
+	{
+		_grid->buildTower();
+	}
 
-	for ( auto actor : mActors )
+	int x, y;
+	const Uint32 buttons = SDL_GetMouseState( &x, &y );
+	if ( SDL_BUTTON( buttons ) & SDL_BUTTON_LEFT)
+	{
+		_grid->processClick( x, y );
+	}
+
+	_updatingActors = true;
+
+	for ( auto actor : _actors )
 	{
 		actor->processInput( keyState );
 	}
 
-	mUpdatingActors = false;
+	_updatingActors = false;
 }
 
 void Game::updateGame( void ) noexcept
 {
-	while ( false == SDL_TICKS_PASSED( SDL_GetTicks(), mTicksCount + 16 ) )
+	while ( false == SDL_TICKS_PASSED( SDL_GetTicks(), _ticksCount + 16 ) )
 		;
 
-	float deltaTime = ( SDL_GetTicks() - mTicksCount ) / 1000.0f;
+	float deltaTime = ( SDL_GetTicks() - _ticksCount ) / 1000.0f;
 	if ( 0.05f < deltaTime )
 	{
 		deltaTime = 0.05f;
 	}
 
-	mTicksCount = SDL_GetTicks();
+	_ticksCount = SDL_GetTicks();
 
-	mUpdatingActors = true;
+	_updatingActors = true;
 	
-	for ( auto actor : mActors )
+	for ( auto actor : _actors )
 	{
 		actor->update( deltaTime );
 	}
 
-	mUpdatingActors = false;
+	_updatingActors = false;
 
-	for ( auto pending : mPendingActors )
+	for ( auto pending : _pendingActors )
 	{
-		mActors.emplace_back( pending );
+		_actors.emplace_back( pending );
 	}
-	mPendingActors.clear();
+	_pendingActors.clear();
 
 	std::vector<Actor*> deadActors;
-	for ( auto actor : mActors )
+	for ( auto actor : _actors )
 	{
 		if ( State::EDead == actor->getState() )
 		{
@@ -143,59 +157,56 @@ void Game::updateGame( void ) noexcept
 
 void Game::generateOutput( void ) noexcept
 {
-	SDL_SetRenderDrawColor( mRenderer, 0, 0, 0, 255 );
-	SDL_RenderClear( mRenderer );
+	SDL_SetRenderDrawColor( _renderer, 0, 0, 0, 255 );
+	SDL_RenderClear( _renderer );
 
-	for ( auto sprite : mSprites )
+	for ( auto sprite : _sprites )
 	{
-		sprite->draw( mRenderer );
+		sprite->draw( _renderer );
 	}
 
-	SDL_RenderPresent( mRenderer );
+	SDL_RenderPresent( _renderer );
 }
 
 void Game::loadData( void ) noexcept
 {
-	mShip = new Ship( this );
-	mShip->setPosition( Vector2( 100.0f, 384.0f ) );
-	mShip->setScale( 1.5f );
+	_grid = new Grid(this);
 
-	Actor* temp = new Actor( this );
-	temp->setPosition( Vector2( 512.0f, 384.0f ) );
+	/*
+	Actor* a = new Actor(this);
+	AIComponent* aic = new AIComponent(a)
 
-
-	const int numAsteroids = 20;
-
-	for ( int i = 0; i < numAsteroids; ++i )
-	{
-		new Asteroid( this );
-	}
-
+	aic->RegisterState(new AIPatrol(aic));
+	aic->RegisterState(new AIDeath(aic));
+	aic->RegisterState(new AIAttack(aic));
+	
+	aic->ChangeState("Patrol");
+	*/
 }
 
 void Game::unloadData( void ) noexcept
 {
-	while ( false == mActors.empty() )
+	while ( false == _actors.empty() )
 	{
-		delete mActors.back();
+		delete _actors.back();
 	}
 
-	for ( auto i : mTextures )
+	for ( auto i : _textures )
 	{
 		SDL_DestroyTexture( i.second );
 	}
 
-	mTextures.clear();
+	_textures.clear();
 }
 
-SDL_Texture* Game::getTexture(const std::string& fileName) noexcept
+SDL_Texture* Game::getTexture( const std::string& fileName ) noexcept
 {
-	SDL_Texture* tex = nullptr;
+	SDL_Texture* texture = nullptr;
 
-	auto iter = mTextures.find( fileName );
-	if ( iter != mTextures.end() )
+	auto iter = _textures.find( fileName );
+	if ( iter != _textures.end() )
 	{
-		tex = iter->second;
+		texture = iter->second;
 	}
 	else
 	{
@@ -207,31 +218,48 @@ SDL_Texture* Game::getTexture(const std::string& fileName) noexcept
 			return nullptr;
 		}
 
-		tex = SDL_CreateTextureFromSurface( mRenderer, surf );
+		texture = SDL_CreateTextureFromSurface( _renderer, surf );
 		SDL_FreeSurface( surf );
-		if ( nullptr == tex)
+		if ( nullptr == texture)
 		{
 			SDL_Log( "Failed to convert surface to texture for %s", fileName.c_str() );
 
 			return nullptr;
 		}
 
-		mTextures.emplace( fileName.c_str(), tex );
+		_textures.emplace( fileName.c_str(), texture );
 	}
-	return tex;
+	return texture;
 }
 
-void Game::addAsteroid( Asteroid* ast ) noexcept
+Grid* Game::getGrid( void ) const noexcept
 {
-	mAsteroids.emplace_back( ast );
+	return _grid;
 }
 
-void Game::removeAsteroid( Asteroid* ast ) noexcept
+std::vector<Enemy*>& Game::getEnemies( void ) noexcept
 {
-	auto iter = std::find( mAsteroids.begin(), mAsteroids.end(), ast );
-	if ( iter != mAsteroids.end() )
+	return _enemies;
+}
+
+Enemy * Game::getNearestEnemy( const Vector2 & position ) const noexcept
+{
+	Enemy* nearest = nullptr;
+	
+	if ( 0 < _enemies.size() )
 	{
-		mAsteroids.erase( iter );
+		nearest = _enemies[0];
+
+		float bestDistSq = ( position - _enemies[0]->getPosition() ).LengthSq();
+		for ( int ii = 1; ii < static_cast<int>( _enemies.size() ); ++ii )
+		{
+			float newDistSq = ( position - _enemies[ii]->getPosition() ).LengthSq();
+			if ( newDistSq < bestDistSq )
+			{
+				bestDistSq	= newDistSq;
+				nearest		= _enemies[ii];
+			}
+		}
 	}
 }
 
@@ -239,37 +267,37 @@ void Game::shutdown( void ) noexcept
 {
 	unloadData();
 	IMG_Quit();
-	SDL_DestroyRenderer( mRenderer);
-	SDL_DestroyWindow( mWindow );
+	SDL_DestroyRenderer( _renderer);
+	SDL_DestroyWindow( _window );
 	SDL_Quit();
 }
 
 void Game::addActor( Actor* actor ) noexcept
 {
-	if (mUpdatingActors)
+	if (_updatingActors)
 	{
-		mPendingActors.emplace_back(actor);
+		_pendingActors.emplace_back(actor);
 	}
 	else
 	{
-		mActors.emplace_back(actor);
+		_actors.emplace_back(actor);
 	}
 }
 
 void Game::removeActor( Actor* actor ) noexcept
 {
-	auto iter = std::find( mPendingActors.begin(), mPendingActors.end(), actor );
-	if ( iter != mPendingActors.end() )
+	auto iter = std::find( _pendingActors.begin(), _pendingActors.end(), actor );
+	if ( iter != _pendingActors.end() )
 	{
-		std::iter_swap( iter, mPendingActors.end() - 1 );
-		mPendingActors.pop_back();
+		std::iter_swap( iter, _pendingActors.end() - 1 );
+		_pendingActors.pop_back();
 	}
 
-	iter = std::find( mActors.begin(), mActors.end(), actor );
-	if ( iter != mActors.end() )
+	iter = std::find( _actors.begin(), _actors.end(), actor );
+	if ( iter != _actors.end() )
 	{
-		std::iter_swap( iter, mActors.end() - 1 );
-		mActors.pop_back();
+		std::iter_swap( iter, _actors.end() - 1 );
+		_actors.pop_back();
 	}
 }
 
@@ -277,8 +305,8 @@ void Game::addSprite( SpriteComponent* sprite ) noexcept
 {
 	int myDrawOrder = sprite->getDrawOrder();
 
-	auto iter = mSprites.begin();
-	for ( ; iter != mSprites.end(); ++iter)
+	auto iter = _sprites.begin();
+	for ( ; iter != _sprites.end(); ++iter)
 	{
 		if ( myDrawOrder < (*iter)->getDrawOrder() )
 		{
@@ -286,12 +314,12 @@ void Game::addSprite( SpriteComponent* sprite ) noexcept
 		}
 	}
 
-	mSprites.insert( iter, sprite );
+	_sprites.insert( iter, sprite );
 }
 
 void Game::removeSprite( SpriteComponent* sprite ) noexcept
 {
-	auto iter = std::find( mSprites.begin(), mSprites.end(), sprite );
+	auto iter = std::find( _sprites.begin(), _sprites.end(), sprite );
 
-	mSprites.erase( iter );
+	_sprites.erase( iter );
 }

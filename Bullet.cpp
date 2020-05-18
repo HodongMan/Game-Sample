@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include "Bullet.h"
 #include "SpriteComponent.h"
 #include "MoveComponent.h"
@@ -14,10 +16,10 @@ Bullet::Bullet( Game* game )
 	MoveComponent* mc = new MoveComponent( this );
 	mc->setForwardSpeed( 400.0f );
 	
-	mCircle = new CircleComponent(this);
-	mCircle->setRadius( 5.0f );
+	_circle = new CircleComponent(this);
+	_circle->setRadius( 5.0f );
 	
-	mLiveTime = 1.0f;
+	_liveTime = 1.0f;
 }
 
 void Bullet::updateActor( float deltaTime ) noexcept
@@ -26,7 +28,7 @@ void Bullet::updateActor( float deltaTime ) noexcept
 	
 	for ( Enemy* e : getGame()->getEnemies() )
 	{
-		if (Intersect( *mCircle, *(e->getCircle() ) ) )
+		if (Intersect( *_circle, *(e->getCircle() ) ) )
 		{
 			e->setState( State::EDead );
 			setState( State::EDead );
@@ -34,8 +36,8 @@ void Bullet::updateActor( float deltaTime ) noexcept
 		}
 	}
 	
-	mLiveTime -= deltaTime;
-	if ( mLiveTime <= 0.0f )
+	_liveTime -= deltaTime;
+	if ( _liveTime <= 0.0f )
 	{
 		setState( State::EDead );
 	}

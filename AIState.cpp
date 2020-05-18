@@ -1,6 +1,7 @@
+#include "pch.h"
+
 #include "AIState.h"
 #include "AIComponent.h"
-#include <SDL_log.h>
 
 void AIPatrol::update( float deltaTime ) noexcept
 {
@@ -9,7 +10,7 @@ void AIPatrol::update( float deltaTime ) noexcept
 	bool dead = true;
 	if ( dead )
 	{
-		mOwner->changeState( "Death" );
+		_owner->changeState( "Death" );
 	}
 }
 

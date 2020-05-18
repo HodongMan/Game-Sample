@@ -1,8 +1,7 @@
 #pragma once
 
-#include <SDL_config.h>
-
 class Actor;
+
 
 class Component
 {
@@ -16,10 +15,10 @@ public:
 
 	virtual void processInput( const uint8_t* keyState ) noexcept {}
 
-	int getUpdateOrder() const noexcept { return mUpdateOrder; }
+	int getUpdateOrder() const noexcept { return _updateOrder; }
 
 protected:
 
-	Actor* mOwner;
-	int mUpdateOrder;
+	Actor* _owner;
+	int _updateOrder;
 };

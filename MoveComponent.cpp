@@ -14,16 +14,16 @@ void MoveComponent::update( float deltaTime ) noexcept
 {
 	if ( false == Math::NearZero( mAngularSpeed ) )
 	{
-		float rotation	= mOwner->getRotation();
+		float rotation	= _owner->getRotation();
 		rotation		+= mAngularSpeed * deltaTime;
 
-		mOwner->setRotation( rotation );
+		_owner->setRotation( rotation );
 	}
 
 	if ( false == Math::NearZero( mForwardSpeed ) )
 	{
-		Vector2 position	= mOwner->getPosition();
-		position			+= mOwner->getForward() * mForwardSpeed * deltaTime;
+		Vector2 position	= _owner->getPosition();
+		position			+= _owner->getForward() * mForwardSpeed * deltaTime;
 
 		if ( position.x < 0.0f )
 		{ 
@@ -43,6 +43,6 @@ void MoveComponent::update( float deltaTime ) noexcept
 			position.y = 2.0f; 
 		}
 
-		mOwner->setPosition( position );
+		_owner->setPosition( position );
 	}
 }

@@ -1,44 +1,46 @@
+#include "pch.h"
+
 #include "AIComponent.h"
 #include "Actor.h"
 #include "AIState.h"
-#include <SDL_log.h>
+
 
 AIComponent::AIComponent( Actor* owner )
 	:Component( owner )
-	, mCurrentState( nullptr )
+	, _currentState( nullptr )
 {
 }
 
 void AIComponent::update( float deltaTime ) noexcept
 {
-	if ( nullptr != mCurrentState )
+	if ( nullptr != _currentState )
 	{
-		mCurrentState->update( deltaTime );
+		_currentState->update( deltaTime );
 	}
 }
 
 void AIComponent::changeState( const std::string& name ) noexcept
 {
-	if ( nullptr != mCurrentState )
+	if ( nullptr != _currentState )
 	{
-		mCurrentState->onExit();
+		_currentState->onExit();
 	}
 	\
-	auto iter = mStateMap.find( name );
-	if ( iter != mStateMap.end() )
+	auto iter = _stateMap.find( name );
+	if ( iter != _stateMap.end() )
 	{
-		mCurrentState = iter->second;
+		_currentState = iter->second;
 
-		mCurrentState->onEnter();
+		_currentState->onEnter();
 	}
 	else
 	{
 		SDL_Log( "Could not find AIState %s in state map", name.c_str() );
-		mCurrentState = nullptr;
+		_currentState = nullptr;
 	}
 }
 
 void AIComponent::registerState( AIState* state ) noexcept
 {
-	mStateMap.emplace( state->getName(), state );
+	_stateMap.emplace( state->getName(), state );
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include "Math.h"
 #include "TypeDefine.h"
 
@@ -24,33 +23,33 @@ public:
 
 	virtual void actorInput( const uint8_t* keyState ) noexcept;
 
-	const Vector2& getPosition( void ) const noexcept { return mPosition; }
-	void setPosition( const Vector2& position ) noexcept { mPosition = position; }
+	const Vector2& getPosition( void ) const noexcept { return _position; }
+	void setPosition( const Vector2& position ) noexcept { _position = position; }
 
-	float getScale( void ) const noexcept { return mScale; }
-	void setScale( float scale ) noexcept { mScale = scale; }
+	float getScale( void ) const noexcept { return _scale; }
+	void setScale( float scale ) noexcept { _scale = scale; }
 
-	float getRotation( void ) const noexcept { return mRotation; }
-	void setRotation( float rotation ) noexcept { mRotation = rotation; }
+	float getRotation( void ) const noexcept { return _rotation; }
+	void setRotation( float rotation ) noexcept { _rotation = rotation; }
 
-	Vector2 getForward( void ) const noexcept { return Vector2( Math::Cos( mRotation ), -Math::Sin( mRotation ) ); }
+	Vector2 getForward( void ) const noexcept { return Vector2( Math::Cos( _rotation ), -Math::Sin( _rotation ) ); }
 
-	const State& getState( void ) const noexcept { return mState; }
-	void setState( const State& state ) noexcept { mState = state ;}
+	const State& getState( void ) const noexcept { return _state; }
+	void setState( const State& state ) noexcept { _state = state ;}
 
-	Game* getGame( void ) const noexcept { return mGame; }
+	Game* getGame( void ) const noexcept { return _game; }
 
 	void addComponent( Component* component ) noexcept;
 	void removeComponent( Component* component ) noexcept;
 
 private:
 
-	State mState;
+	State _state;
 
-	Vector2 mPosition;
-	float mScale;
-	float mRotation;
+	Vector2 _position;
+	float _scale;
+	float _rotation;
 
-	std::vector<Component*> mComponents;
-	Game* mGame;
+	std::vector<Component*> _components;
+	Game* _game;
 };

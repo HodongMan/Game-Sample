@@ -19,6 +19,6 @@ public:
 	void registerState( AIState* state ) noexcept;
 
 private:
-	std::unordered_map<std::string, AIState*> mStateMap;
-	AIState* mCurrentState;
+	std::unordered_map<std::string, AIState*> _stateMap;
+	AIState* _currentState;
 };

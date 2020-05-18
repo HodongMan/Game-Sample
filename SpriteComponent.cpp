@@ -9,12 +9,12 @@ SpriteComponent::SpriteComponent( Actor* owner, int drawOrder )
 	, mTexWidth( 0 )
 	, mTexHeight( 0 )
 {
-	mOwner->getGame()->addSprite( this );
+	_owner->getGame()->addSprite( this );
 }
 
 SpriteComponent::~SpriteComponent()
 {
-	mOwner->getGame()->removeSprite( this );
+	_owner->getGame()->removeSprite( this );
 }
 
 void SpriteComponent::draw(SDL_Renderer* renderer) noexcept
@@ -23,16 +23,16 @@ void SpriteComponent::draw(SDL_Renderer* renderer) noexcept
 	{
 		SDL_Rect rect;
 
-		rect.w = static_cast<int>( mTexWidth * mOwner->getScale() );
-		rect.h = static_cast<int>( mTexHeight * mOwner->getScale() );
-		rect.x = static_cast<int>( mOwner->getPosition().x - rect.w / 2);
-		rect.y = static_cast<int>( mOwner->getPosition().y - rect.h / 2);
+		rect.w = static_cast<int>( mTexWidth * _owner->getScale() );
+		rect.h = static_cast<int>( mTexHeight * _owner->getScale() );
+		rect.x = static_cast<int>( _owner->getPosition().x - rect.w / 2);
+		rect.y = static_cast<int>( _owner->getPosition().y - rect.h / 2);
 
 		SDL_RenderCopyEx( renderer, 
 			mTexture, 
 			nullptr, 
 			&rect,
-			-Math::ToDegrees( mOwner->getRotation() ),
+			-Math::ToDegrees( _owner->getRotation() ),
 			nullptr,
 			SDL_FLIP_NONE );
 	}

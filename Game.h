@@ -1,14 +1,14 @@
 #pragma once
 
-#include "SDL.h"
-#include <unordered_map>
-#include <string>
-#include <vector>
+#include "Math.h"
 
 class Ship;
 class Actor;
 class SpriteComponent;
 class Asteroid;
+class Grid;
+class Enemy;
+
 
 class Game
 {
@@ -27,9 +27,9 @@ public:
 
 	SDL_Texture* getTexture( const std::string& fileName ) noexcept;
 
-	void addAsteroid( Asteroid* ast) noexcept;
-	void removeAsteroid( Asteroid* ast) noexcept;
-	std::vector<Asteroid*>& getAsteroids( void ) noexcept { return mAsteroids; }
+	Grid* getGrid( void ) const noexcept;
+	std::vector<Enemy*>& getEnemies( void ) noexcept;
+	Enemy* getNearestEnemy( const Vector2& position ) const noexcept;
 
 private:
 	void processInput( void ) noexcept;
@@ -38,21 +38,21 @@ private:
 	void loadData( void ) noexcept;
 	void unloadData( void ) noexcept;
 
-	std::unordered_map<std::string, SDL_Texture*> mTextures;
+	std::unordered_map<std::string, SDL_Texture*> _textures;
 
-	std::vector<Actor*> mActors;
+	std::vector<Actor*> _actors;
+	std::vector<Actor*> _pendingActors;
+
+	std::vector<SpriteComponent*> _sprites;
+
+	SDL_Window* _window;
+	SDL_Renderer* _renderer;
+	Uint32 _ticksCount;
+	bool _isRunning;
 	
-	std::vector<Actor*> mPendingActors;
+	bool _updatingActors;
 
-	std::vector<SpriteComponent*> mSprites;
-
-	SDL_Window* mWindow;
-	SDL_Renderer* mRenderer;
-	Uint32 mTicksCount;
-	bool mIsRunning;
-	
-	bool mUpdatingActors;
-
-	Ship* mShip;
-	std::vector<Asteroid*> mAsteroids;
+	std::vector<Enemy*> _enemies;
+	Grid* _grid;
+	float _nextEnemy;
 };

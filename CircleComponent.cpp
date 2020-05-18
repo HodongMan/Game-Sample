@@ -1,22 +1,24 @@
+#include "pch.h"
+
 #include "CircleComponent.h"
 #include "Actor.h"
 
 
 CircleComponent::CircleComponent( Actor* owner )
 	:Component( owner )
-	, mRadius( 0.0f )
+	, _radius( 0.0f )
 {
 
 }
 
 const Vector2& CircleComponent::getCenter( void ) const noexcept
 {
-	return mOwner->getPosition();
+	return _owner->getPosition();
 }
 
 float CircleComponent::getRadius( void ) const noexcept
 {
-	return mOwner->getScale() * mRadius;
+	return _owner->getScale() * _radius;
 }
 
 bool Intersect( const CircleComponent& lhs, const CircleComponent& rhs ) noexcept

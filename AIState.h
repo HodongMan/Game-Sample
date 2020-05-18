@@ -7,7 +7,7 @@ class AIState
 {
 public:
 	AIState( AIComponent* owner )
-		: mOwner( owner )
+		: _owner( owner )
 	{
 	
 	}
@@ -19,7 +19,7 @@ public:
 	virtual const char* getName( void ) const noexcept = 0;
 
 protected:
-	AIComponent* mOwner;
+	AIComponent* _owner;
 };
 
 class AIPatrol : public AIState

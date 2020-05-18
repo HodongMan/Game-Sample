@@ -1,16 +1,18 @@
+#include "pch.h"
+
 #include "Component.h"
 #include "Actor.h"
 
 Component::Component( Actor* owner, int updateOrder )
-	: mOwner( owner )
-	, mUpdateOrder( updateOrder )
+	: _owner( owner )
+	, _updateOrder( updateOrder )
 {
-	mOwner->addComponent( this );
+	_owner->addComponent( this );
 }
 
 Component::~Component()
 {
-	mOwner->removeComponent( this );
+	_owner->removeComponent( this );
 }
 
 void Component::update( float deltaTime ) noexcept
